@@ -1,0 +1,690 @@
+<!DOCTYPE html>
+<html lang="kk">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MektepClub — Үйірмелерге тіркелу платформасы</title>
+  <meta name="description" content="Мектеп үйірмелері мен секцияларына онлайн тіркелу және оларды басқару жүйесі">
+  <!-- Google Fonts: Outfit -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="index.css">
+</head>
+<body class="dark-theme">
+  <!-- Background Glows for Aesthetics -->
+  <div class="glow-bg glow-1"></div>
+  <div class="glow-bg glow-2"></div>
+
+  <!-- Header -->
+  <header class="app-header">
+    <div class="header-container">
+      <div class="logo">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="logo-icon"><path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1-2.5-2.5Z"/><path d="M6 6h10"/><path d="M6 10h10"/><path d="M6 14h10"/></svg>
+        <span>Mektep<span>Club</span></span>
+      </div>
+      <nav class="nav-menu">
+        <button id="nav-catalog" class="nav-btn active">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="7" height="9" x="3" y="3" rx="1"/><rect width="7" height="5" x="14" y="3" rx="1"/><rect width="7" height="9" x="14" y="12" rx="1"/><rect width="7" height="5" x="3" y="16" rx="1"/></svg>
+          Үйірмелер каталогы
+        </button>
+        <button id="nav-dashboard" class="nav-btn hidden">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
+          Жеке кабинет
+        </button>
+      </nav>
+      <div class="header-actions">
+        <button id="theme-toggle" class="theme-toggle-btn" aria-label="Тақырыпты ауыстыру">
+          <svg id="theme-sun" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="theme-icon"><circle cx="12" cy="12" r="4"/><path d="M12 2v2"/><path d="M12 20v2"/><path d="m4.93 4.93 1.41 1.41"/><path d="m17.66 17.66 1.41 1.41"/><path d="M2 12h2"/><path d="M20 12h2"/><path d="m6.34 17.66-1.41 1.41"/><path d="m19.07 4.93-1.41 1.41"/></svg>
+          <svg id="theme-moon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="theme-icon hidden"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/></svg>
+        </button>
+        
+        <button id="btn-login-trigger" class="primary-btn">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/><polyline points="10 17 15 12 10 7"/><line x1="15" x2="3" y1="12" y2="12"/></svg>
+          Кіру / Тіркелу
+        </button>
+
+        <div id="user-profile-summary" class="user-summary hidden">
+          <span id="user-display-name">Оқушы Асан</span>
+          <button id="btn-logout" class="icon-btn" title="Шығу">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" x2="9" y1="12" y2="12"/></svg>
+          </button>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Container -->
+  <main class="app-main">
+
+    <!-- ================= VIEW 1: CLUBS CATALOG ================= -->
+    <section id="view-catalog" class="app-view active">
+      <!-- Guest Alert Banner (Only shown to guest users) -->
+      <div id="guest-alert" class="guest-alert-banner">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="alert-icon"><circle cx="12" cy="12" r="10"/><line x1="12" x2="12" y1="8" y2="12"/><line x1="12" x2="12" y1="16" y2="16"/></svg>
+        <span>Үйірмелерге тіркелу үшін алдымен оқушы профилімен <strong>тіркеліңіз</strong> немесе жүйеге <strong>кіріңіз</strong>.</span>
+      </div>
+
+      <!-- Hero Banner -->
+      <div class="hero-banner">
+        <div class="hero-content">
+          <h1>Болашағыңды бүгін таңда!</h1>
+          <p>Мектебіміздегі қызықты үйірмелер мен секцияларға онлайн тіркел және өз қабілеттеріңді дамыт.</p>
+        </div>
+        <div class="hero-stats">
+          <div class="hero-stat-item">
+            <span class="stat-num" id="hero-total-clubs">0+</span>
+            <span class="stat-lbl">Үйірмелер</span>
+          </div>
+          <div class="hero-stat-item">
+            <span class="stat-num" id="hero-total-places">0+</span>
+            <span class="stat-lbl">Бос орындар</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Filters & Search -->
+      <div class="search-filter-row glass-panel">
+        <div class="search-box">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="search-icon"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+          <input type="text" id="search-clubs" placeholder="Үйірме атауын немесе жетекшіні іздеу...">
+        </div>
+        <div class="filter-buttons">
+          <button class="filter-btn active" data-category="all">Барлығы</button>
+          <button class="filter-btn" data-category="Sport">Спорт</button>
+          <button class="filter-btn" data-category="Science">Ғылым</button>
+          <button class="filter-btn" data-category="Art">Өнер</button>
+          <button class="filter-btn" data-category="Tech">Технология</button>
+        </div>
+      </div>
+
+      <!-- Clubs Grid -->
+      <div class="section-title-row">
+        <h2>Қолжетімді үйірмелер мен секциялар</h2>
+        <span class="badge" id="clubs-count-badge">0 үйірме</span>
+      </div>
+      
+      <div class="clubs-grid" id="clubs-container">
+        <!-- Cards loaded dynamically via JS -->
+      </div>
+    </section>
+
+    <!-- ================= VIEW 2: STUDENT DASHBOARD ================= -->
+    <section id="view-student-dashboard" class="app-view">
+      <div class="dashboard-grid-layout">
+        <!-- Left Sidebar: Profile Summary & Quote -->
+        <div class="dashboard-sidebar">
+          <div class="profile-card glass-panel">
+            <div class="profile-header">
+              <div class="profile-avatar">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+              </div>
+              <h3 id="student-profile-name">Асан Саматұлы</h3>
+              <span class="badge" id="student-profile-grade">7 «А» сыныбы</span>
+            </div>
+            <div class="profile-details">
+              <div class="detail-row">
+                <span>Ата-ана телефоны:</span>
+                <strong id="student-profile-phone">+7 707 123 4567</strong>
+              </div>
+              <div class="detail-row">
+                <span>Белсенді үйірмелер:</span>
+                <strong id="student-profile-clubs-count">0</strong>
+              </div>
+            </div>
+          </div>
+
+          <!-- Motivational Quotes API Widget -->
+          <div class="quote-card glass-panel">
+            <span class="quote-label"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="quote-icon"><path d="M15 14c.2-1 .7-1.7 1.5-2.5 1-.9 1.5-2.2 1.5-3.5A6 6 0 0 0 6 8c0 1 .2 2.2 1.5 3.5.7.7 1.3 1.5 1.5 2.5"/><path d="M9 18h6"/><path d="M10 22h4"/></svg> Күнделікті дәйексөз</span>
+            <blockquote id="daily-quote">«Жақсы маман болу үшін біліммен бірге қабілетті де ұштау керек.»</blockquote>
+            <cite id="daily-quote-author">MektepClub даналығы</cite>
+          </div>
+        </div>
+
+        <!-- Main Dashboard Content -->
+        <div class="dashboard-main-content">
+          <!-- Registered Clubs Section -->
+          <div class="panel-card glass-panel">
+            <div class="panel-header">
+              <h3>Менің белсенді үйірмелерім</h3>
+            </div>
+            <div class="panel-body">
+              <div class="my-clubs-dashboard-grid" id="student-my-clubs-grid">
+                <!-- Dynamic cards -->
+              </div>
+              <div id="no-registered-clubs" class="empty-table-state">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="empty-icon"><circle cx="12" cy="12" r="10"/><line x1="12" x2="12" y1="8" y2="12"/><line x1="12" x2="12" y1="16" y2="16"/></svg>
+                <p>Сіз әлі ешқандай үйірмеге тіркелмегенсіз. «Үйірмелер каталогы» бөліміне өтіп, өзіңізге ұнаған сабақты таңдаңыз!</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Weekly Schedule Matrix (Оқушы өз графигін көреді) -->
+          <div class="panel-card glass-panel" style="margin-top: 2rem;">
+            <div class="panel-header">
+              <h3>Апталық сабақ графигі</h3>
+              <span class="sub-text">Тіркелген секцияларыңыздың апталық кестесі</span>
+            </div>
+            <div class="panel-body">
+              <div class="schedule-grid" id="student-schedule-grid">
+                <div class="schedule-day-col" data-day="Дс">
+                  <div class="day-header">Дүйсенбі (Дс)</div>
+                  <div class="day-slots" id="schedule-slots-Дс"></div>
+                </div>
+                <div class="schedule-day-col" data-day="Сс">
+                  <div class="day-header">Сейсенбі (Сс)</div>
+                  <div class="day-slots" id="schedule-slots-Сс"></div>
+                </div>
+                <div class="schedule-day-col" data-day="Ср">
+                  <div class="day-header">Сәрсенбі (Ср)</div>
+                  <div class="day-slots" id="schedule-slots-Ср"></div>
+                </div>
+                <div class="schedule-day-col" data-day="Бс">
+                  <div class="day-header">Бейсенбі (Бс)</div>
+                  <div class="day-slots" id="schedule-slots-Бс"></div>
+                </div>
+                <div class="schedule-day-col" data-day="Жм">
+                  <div class="day-header">Жұма (Жм)</div>
+                  <div class="day-slots" id="schedule-slots-Жм"></div>
+                </div>
+                <div class="schedule-day-col" data-day="Сн">
+                  <div class="day-header">Сенбі (Сн)</div>
+                  <div class="day-slots" id="schedule-slots-Сн"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="panel-card glass-panel" style="margin-top: 2rem;">
+            <div class="panel-header">
+              <h3>Жеке апта жоспары</h3>
+              <span class="sub-text">Аптасына неше секцияға қатысатыныңызды және ыңғайлы күндерді белгілеңіз</span>
+            </div>
+            <form id="student-planner-form" class="student-planner-form">
+              <div class="planner-fields">
+                <div class="form-group">
+                  <label for="planner-sections-count">Аптадағы секциялар саны</label>
+                  <input type="number" id="planner-sections-count" min="1" max="12" value="2">
+                </div>
+                <div class="form-group">
+                  <label for="planner-notes">Қосымша ескерту</label>
+                  <input type="text" id="planner-notes" placeholder="Мысалы: сабақтан кейін 16:00-ден соң ыңғайлы">
+                </div>
+              </div>
+              <div class="planner-days" id="planner-days">
+                <label><input type="checkbox" value="Дс"> Дс</label>
+                <label><input type="checkbox" value="Сс"> Сс</label>
+                <label><input type="checkbox" value="Ср"> Ср</label>
+                <label><input type="checkbox" value="Бс"> Бс</label>
+                <label><input type="checkbox" value="Жм"> Жм</label>
+                <label><input type="checkbox" value="Сн"> Сн</label>
+              </div>
+              <div class="planner-summary" id="planner-summary">Жоспар әлі сақталмаған.</div>
+              <div class="panel-footer-actions planner-actions">
+                <button type="submit" class="primary-btn">Жоспарды сақтау</button>
+              </div>
+            </form>
+          </div>
+
+          <!-- Personal Attendance History (Келген-келмеген күндері) -->
+          <div class="panel-card glass-panel" style="margin-top: 2rem;">
+            <div class="panel-header">
+              <h3>Сабақтарға қатысу журналының тарихы</h3>
+              <span class="sub-text">Мұғалімдер белгілеген қатысу нәтижелері</span>
+            </div>
+            <div class="panel-body table-container">
+              <table class="students-table">
+                <thead>
+                  <tr>
+                    <th>Күні</th>
+                    <th>Үйірме атауы</th>
+                    <th>Мұғалім</th>
+                    <th>Күйі</th>
+                  </tr>
+                </thead>
+                <tbody id="student-attendance-tbody">
+                  <!-- Dynamic rows -->
+                </tbody>
+              </table>
+              <div id="no-attendance-records" class="empty-table-state hidden">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="empty-icon"><circle cx="12" cy="12" r="10"/><line x1="12" x2="12" y1="8" y2="12"/><line x1="12" x2="12" y1="16" y2="16"/></svg>
+                <p>Қатысу жазбалары әлі тіркелмеген.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================= VIEW 3: TEACHER / ADMIN DASHBOARD ================= -->
+    <section id="view-teacher-dashboard" class="app-view">
+      <div class="dashboard-header-row">
+        <div>
+          <h2 id="teacher-dashboard-title">Мұғалім беті</h2>
+          <p class="sub-text" id="teacher-welcome-text">Қош келдіңіз, Мұғалім!</p>
+        </div>
+        <div class="dashboard-actions">
+          <button id="btn-add-club-modal" class="primary-btn hidden">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="M12 5v19"/></svg>
+            Жаңа үйірме қосу
+          </button>
+          <button id="btn-add-teacher-modal" class="primary-btn hidden">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 21a6 6 0 0 0-12 0"/><circle cx="12" cy="11" r="4"/><path d="M19 8v6"/><path d="M22 11h-6"/></svg>
+            Мұғалім қосу
+          </button>
+        </div>
+      </div>
+
+      <!-- Dashboard Analytics -->
+      <div class="analytics-row">
+        <div class="analytic-card glass-panel">
+          <div class="card-icon blue-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="18" x="3" y="3" rx="2"/><path d="M3 9h18"/><path d="M9 21V9"/></svg>
+          </div>
+          <div class="card-info">
+            <span class="lbl">Үйірмелер саны</span>
+            <span class="num" id="admin-stat-clubs">0</span>
+          </div>
+        </div>
+        <div class="analytic-card glass-panel">
+          <div class="card-icon green-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>
+          </div>
+          <div class="card-info">
+            <span class="lbl">Тіркелген оқушылар</span>
+            <span class="num" id="admin-stat-students">0</span>
+          </div>
+        </div>
+        <div class="analytic-card glass-panel">
+          <div class="card-icon purple-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v20"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+          </div>
+          <div class="card-info">
+            <span class="lbl">Толу көрсеткіші</span>
+            <span class="num" id="admin-stat-occupancy">0%</span>
+          </div>
+        </div>
+      </div>
+
+      <div id="admin-teachers-panel" class="panel-card glass-panel hidden admin-teachers-panel">
+        <div class="panel-header">
+          <div class="panel-header-title">
+            <h3>Мұғалім аккаунттары</h3>
+            <span class="sub-text">Админ қосқан логин мен пароль арқылы мұғалімдер жүйеге кіреді</span>
+          </div>
+          <span class="badge" id="admin-teachers-count">0 мұғалім</span>
+        </div>
+        <div class="table-container">
+          <table class="students-table">
+            <thead>
+              <tr>
+                <th>Аты-жөні</th>
+                <th>Логин</th>
+                <th>Пароль</th>
+                <th>Үйірме саны</th>
+                <th class="actions-col">Әрекеттер</th>
+              </tr>
+            </thead>
+            <tbody id="admin-teachers-tbody"></tbody>
+          </table>
+          <div id="no-teachers-placeholder" class="empty-table-state hidden">
+            <p>Мұғалім аккаунттары әлі қосылмаған.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Main Dashboard Split Grid -->
+      <div class="dashboard-split-grid">
+        <!-- Left side: Clubs list -->
+        <div class="panel-card glass-panel">
+          <div class="panel-header">
+            <h3>Менің үйірмелерім</h3>
+            <span class="badge" id="admin-clubs-count">0 үйірме</span>
+          </div>
+          <div class="admin-clubs-list" id="admin-clubs-list">
+            <!-- Loaded dynamically via JS -->
+          </div>
+        </div>
+
+        <!-- Right side: Selected club sheet (Student lists / Attendance roll) -->
+        <div class="panel-card glass-panel" id="students-management-panel">
+          <div class="panel-header">
+            <div class="panel-header-title">
+              <h3 id="selected-club-title">Робототехника</h3>
+              <span class="sub-text" id="selected-club-inst">Жетекші: Асқаров Ә.</span>
+            </div>
+            
+            <!-- Tab switches for teacher workspace -->
+            <div class="tab-selectors">
+              <button id="tab-btn-students" class="tab-select-btn active">Оқушылар</button>
+              <button id="tab-btn-attendance" class="tab-select-btn">Қатысу журналы</button>
+            </div>
+
+            <div class="panel-header-actions">
+              <button id="btn-export-csv" class="icon-btn" title="CSV форматында жүктеу">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" x2="12" y1="15" y2="3"/></svg>
+                Экспорт
+              </button>
+              <button id="btn-print-list" class="icon-btn" title="Тізімді басып шығару">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect width="12" height="8" x="6" y="14" rx="1"/><path d="M6 6V4a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v2"/></svg>
+                Баспаға
+              </button>
+            </div>
+          </div>
+
+          <!-- Tab Content 1: Students Table -->
+          <div id="tab-content-students" class="teacher-tab-content active">
+            <div class="panel-search-bar">
+              <input type="text" id="search-students" placeholder="Оқушы есімі немесе сыныбы арқылы іздеу...">
+            </div>
+            <div class="table-container">
+              <table class="students-table">
+                <thead>
+                  <tr>
+                    <th>№</th>
+                    <th>Оқушының аты-жөні</th>
+                    <th>Сыныбы</th>
+                    <th>Ата-ана телефоны</th>
+                    <th>Тіркелген күні</th>
+                    <th>Қатысуы</th>
+                    <th class="actions-col admin-only-field">Әрекеттер</th>
+                  </tr>
+                </thead>
+                <tbody id="admin-students-tbody">
+                  <!-- Loaded dynamically via JS -->
+                </tbody>
+              </table>
+              <div id="no-students-placeholder" class="empty-table-state hidden">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="empty-icon"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><line x1="17" x2="22" y1="8" y2="13"/><line x1="22" x2="17" y1="8" y2="13"/></svg>
+                <p>Бұл үйірмеге әлі оқушылар тіркелмеген.</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Tab Content 2: Attendance Journal -->
+          <div id="tab-content-attendance" class="teacher-tab-content">
+            <div class="attendance-date-bar">
+              <label for="attendance-date">Сабақ күні:</label>
+              <input type="date" id="attendance-date">
+              <span class="hint-text">Күнді таңдаңыз және қатысуды белгілеңіз</span>
+            </div>
+            <div class="table-container">
+              <table class="students-table">
+                <thead>
+                  <tr>
+                    <th>Оқушының аты-жөні</th>
+                    <th>Сыныбы</th>
+                    <th style="width: 260px; text-align: center;">Сабаққа қатысуы</th>
+                  </tr>
+                </thead>
+                <tbody id="attendance-table-body">
+                  <!-- Dynamic attendance rows with radios -->
+                </tbody>
+              </table>
+              <div id="no-attendance-students-placeholder" class="empty-table-state hidden">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="empty-icon"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><line x1="17" x2="22" y1="8" y2="13"/><line x1="22" x2="17" y1="8" y2="13"/></svg>
+                <p>Қатысу журналын толтыру үшін алдымен оқушыларды тіркеу қажет.</p>
+              </div>
+            </div>
+            <div class="panel-footer-actions">
+              <button id="btn-save-attendance" class="primary-btn">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/></svg>
+                Журналды сақтау
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- Footer -->
+  <footer class="app-footer">
+    <p>© 2026 MektepClub. Мектеп үйірмелері мен секцияларына тіркелу платформасы.</p>
+  </footer>
+
+  <!-- ================= DIALOGS / MODALS ================= -->
+
+  <!-- 1. LOGIN / SIGNUP DIALOG -->
+  <dialog id="login-dialog" class="glass-dialog">
+    <div class="dialog-content">
+      <div class="dialog-header">
+        <div class="dialog-auth-tabs">
+          <button id="tab-login-student" class="auth-tab active">Оқушылар</button>
+          <button id="tab-login-teacher" class="auth-tab">Мұғалімдер</button>
+        </div>
+        <button class="close-dialog-btn btn-close-dialog" aria-label="Жабу">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" x2="6" y1="6" y2="18"/><line x1="6" x2="18" y1="6" y2="18"/></svg>
+        </button>
+      </div>
+
+      <!-- Student Authentication Forms Container -->
+      <div id="auth-student-container" class="auth-form-container active">
+        <!-- Student Login View -->
+        <div id="student-login-box" class="auth-form-box active">
+          <form id="form-student-login" class="dialog-form">
+            <h3>Оқушы парақшасына кіру</h3>
+            <p class="dialog-subtitle">Аты-жөніңізді және тіркелу кезінде берген құпия сөзді жазыңыз</p>
+            
+            <div class="form-group">
+              <label for="login-student-username">Пайдаланушы аты (логин) <span class="required">*</span></label>
+              <input type="text" id="login-student-username" required placeholder="Мысалы: dauren" autocomplete="username">
+            </div>
+            <div class="form-group">
+              <label for="login-student-pass">Құпия сөз <span class="required">*</span></label>
+              <input type="password" id="login-student-pass" required placeholder="••••••" autocomplete="current-password">
+            </div>
+
+            <div class="dialog-actions">
+              <button type="button" id="btn-to-register" class="secondary-btn" style="margin-right: auto;">Тіркелу</button>
+              <button type="submit" class="primary-btn">Кіру</button>
+            </div>
+          </form>
+        </div>
+
+        <!-- Student Register View -->
+        <div id="student-register-box" class="auth-form-box">
+          <form id="form-student-register" class="dialog-form">
+            <h3>Оқушы ретінде тіркелу</h3>
+            <p class="dialog-subtitle">Профиль ашу үшін деректеріңізді толтырыңыз</p>
+            
+            <div class="form-group">
+              <label for="reg-username">Пайдаланушы аты (Логин - жүйеге кіру үшін) <span class="required">*</span></label>
+              <input type="text" id="reg-username" required placeholder="Мысалы: asan123" pattern="^[a-zA-Z0-9_]{3,15}$" title="Тек латын әріптері мен сандар (3-15 таңба)">
+            </div>
+
+            <div class="form-group">
+              <label for="reg-student-name">Оқушының толық аты-жөні <span class="required">*</span></label>
+              <input type="text" id="reg-student-name" required placeholder="Мысалы: Асан Саматұлы">
+            </div>
+
+            <div class="form-row">
+              <div class="form-group">
+                <label for="reg-student-grade">Сыныбы <span class="required">*</span></label>
+                <input type="text" id="reg-student-grade" required placeholder="Мысалы: 7 «А»">
+              </div>
+              <div class="form-group">
+                <label for="reg-parent-phone">Ата-ана телефоны <span class="required">*</span></label>
+                <input type="tel" id="reg-parent-phone" required placeholder="Мысалы: +7 777 123 4567">
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label for="reg-password">Құпия сөз <span class="required">*</span></label>
+              <input type="password" id="reg-password" required placeholder="••••••" autocomplete="new-password">
+            </div>
+
+            <div class="dialog-actions">
+              <button type="button" id="btn-to-login" class="secondary-btn" style="margin-right: auto;">Кіру терезесі</button>
+              <button type="submit" class="primary-btn">Тіркелуді растау</button>
+            </div>
+          </form>
+        </div>
+      </div>
+
+      <!-- Teacher Authentication Form Container -->
+      <div id="auth-teacher-container" class="auth-form-container">
+        <form id="form-teacher-login" class="dialog-form">
+          <h3>Мұғалімдер мен Әкімшілік кіру</h3>
+          <p class="dialog-subtitle">Өзіңізге берілген логин мен құпия сөзді қолданыңыз</p>
+          
+          <div class="form-group">
+            <label for="login-teacher-username">Пайдаланушы логині <span class="required">*</span></label>
+            <input type="text" id="login-teacher-username" required placeholder="Мысалы: baurjan" autocomplete="username">
+          </div>
+          <div class="form-group">
+            <label for="login-teacher-pass">Құпия сөз <span class="required">*</span></label>
+            <input type="password" id="login-teacher-pass" required placeholder="••••••" autocomplete="current-password">
+          </div>
+          <div class="dialog-actions">
+            <button type="submit" class="primary-btn" style="width: 100%;">Жүйеге кіру</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </dialog>
+
+  <!-- 2. REGISTER CONFIRMATION DIALOG (Simple one-click registration) -->
+  <dialog id="register-confirm-dialog" class="glass-dialog">
+    <div class="dialog-content">
+      <div class="dialog-header">
+        <h3>Үйірмеге жазылуды растау</h3>
+        <button class="close-dialog-btn btn-close-dialog" aria-label="Жабу">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" x2="6" y1="6" y2="18"/><line x1="6" x2="18" y1="6" y2="18"/></svg>
+        </button>
+      </div>
+      <div class="dialog-form" style="padding: 2rem;">
+        <p style="font-size: 1.1rem; margin-bottom: 1.5rem;" id="confirm-dialog-text">
+          Сәлем, Асан! Сізді <strong>«Робототехника»</strong> үйірмесіне тіркейміз бе?
+        </p>
+        <input type="hidden" id="confirm-club-id">
+        <div class="dialog-actions">
+          <button type="button" class="secondary-btn btn-close-dialog">Болдырмау</button>
+          <button type="button" id="btn-confirm-register" class="primary-btn">Иә, тіркелу</button>
+        </div>
+      </div>
+    </div>
+  </dialog>
+
+  <!-- 3. ADD/EDIT NEW CLUB DIALOG (Admin) -->
+  <dialog id="add-club-dialog" class="glass-dialog">
+    <div class="dialog-content">
+      <div class="dialog-header">
+        <div>
+          <h3 id="add-club-dialog-title">Жаңа үйірме қосу</h3>
+          <p class="dialog-subtitle">Үйірме мәліметтері мен мұқаба суретін орнатыңыз</p>
+        </div>
+        <button class="close-dialog-btn btn-close-dialog" aria-label="Жабу">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" x2="6" y1="6" y2="18"/><line x1="6" x2="18" y1="6" y2="18"/></svg>
+        </button>
+      </div>
+      <form id="add-club-form" method="dialog" class="dialog-form">
+        <input type="hidden" id="edit-club-id">
+
+        <div class="form-row">
+          <div class="form-group flex-2">
+            <label for="club-name">Үйірме атауы <span class="required">*</span></label>
+            <input type="text" id="club-name" required placeholder="Мысалы: Волейбол үйірмесі">
+          </div>
+          <div class="form-group flex-1">
+            <label for="club-category">Санаты <span class="required">*</span></label>
+            <select id="club-category" required>
+              <option value="Sport">Спорт</option>
+              <option value="Science">Ғылым</option>
+              <option value="Art">Өнер</option>
+              <option value="Tech">Технология</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group flex-2">
+            <label for="club-instructor">Жетекші мұғалім аты-жөні <span class="required">*</span></label>
+            <input type="text" id="club-instructor" required placeholder="Мысалы: Рахметов Ербол">
+          </div>
+          <div class="form-group flex-1">
+            <label for="club-instructor-username">Жетекші логині <span class="required">*</span></label>
+            <input type="text" id="club-instructor-username" required placeholder="Мысалы: erbol">
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label for="club-capacity">Орындар саны <span class="required">*</span></label>
+            <input type="number" id="club-capacity" min="5" max="100" value="20" required>
+          </div>
+          <div class="form-group">
+            <label for="club-image-select">Үйірме мұқаба суреті <span class="required">*</span></label>
+            <select id="club-image-select" required>
+              <option value="tech">Робототехника (tech.png)</option>
+              <option value="sport">Футбол (sport.png)</option>
+              <option value="volleyball">Волейбол (volleyball.png)</option>
+              <option value="art">Сурет салу (art.png)</option>
+              <option value="science">Шахмат (science.png)</option>
+              <option value="school">3D дизайн (school.png)</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="club-schedule">Сабақ кестесі <span class="required">*</span></label>
+          <input type="text" id="club-schedule" required placeholder="Мысалы: Сс, Жм 15:00 - 16:30">
+        </div>
+
+        <div class="form-group">
+          <label for="club-desc">Қысқаша сипаттамасы <span class="required">*</span></label>
+          <textarea id="club-desc" rows="3" required placeholder="Үйірме не үйрететіні туралы қысқаша мәлімет..."></textarea>
+        </div>
+
+        <div class="dialog-actions">
+          <button type="button" class="secondary-btn btn-close-dialog">Болдырмау</button>
+          <button type="submit" id="btn-submit-club" class="primary-btn">Қосу</button>
+        </div>
+      </form>
+    </div>
+  </dialog>
+
+  <!-- 4. ADD/EDIT TEACHER DIALOG (Admin) -->
+  <dialog id="teacher-dialog" class="glass-dialog">
+    <div class="dialog-content">
+      <div class="dialog-header">
+        <div>
+          <h3 id="teacher-dialog-title">Мұғалім қосу</h3>
+          <p class="dialog-subtitle">Мұғалім жүйеге осы логин мен пароль арқылы кіреді</p>
+        </div>
+        <button class="close-dialog-btn btn-close-dialog" aria-label="Жабу">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" x2="6" y1="6" y2="18"/><line x1="6" x2="18" y1="6" y2="18"/></svg>
+        </button>
+      </div>
+      <form id="teacher-form" class="dialog-form">
+        <input type="hidden" id="edit-teacher-id">
+        <div class="form-group">
+          <label for="teacher-full-name">Мұғалімнің аты-жөні <span class="required">*</span></label>
+          <input type="text" id="teacher-full-name" required placeholder="Мысалы: Нұрланов Ермек">
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label for="teacher-username">Логин <span class="required">*</span></label>
+            <input type="text" id="teacher-username" required placeholder="Мысалы: ermek">
+          </div>
+          <div class="form-group">
+            <label for="teacher-password">Пароль <span class="required">*</span></label>
+            <input type="text" id="teacher-password" required placeholder="Мысалы: 12345">
+          </div>
+        </div>
+        <div class="dialog-actions">
+          <button type="button" class="secondary-btn btn-close-dialog">Болдырмау</button>
+          <button type="submit" id="btn-submit-teacher" class="primary-btn">Сақтау</button>
+        </div>
+      </form>
+    </div>
+  </dialog>
+
+  <!-- Toast Container -->
+  <div id="toast-container" class="toast-container"></div>
+
+  <!-- JavaScript file -->
+  <script src="app.js"></script>
+</body>
+</html>
