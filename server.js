@@ -23,9 +23,6 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 let pool;
 
-// ==========================================================================
-// DATABASE INITIALIZATION & MIGRATIONS
-// ==========================================================================
 async function initDatabase() {
   // 1. Connect to default 'postgres' database to check if 'school_clubs' exists
   const tempClient = new Client({
@@ -52,7 +49,6 @@ async function initDatabase() {
     await tempClient.end();
   }
 
-  // 2. Connect to the actual 'school_clubs' database
   pool = new Pool({
     ...dbConfig,
     database: dbName
@@ -110,7 +106,6 @@ async function initDatabase() {
       );
     `);
 
-    // Create Registrations table
     await pool.query(`
       CREATE TABLE IF NOT EXISTS registrations (
         id SERIAL PRIMARY KEY,
@@ -121,7 +116,6 @@ async function initDatabase() {
       );
     `);
 
-    // Create Attendance table
     await pool.query(`
       CREATE TABLE IF NOT EXISTS attendance (
         id SERIAL PRIMARY KEY,
@@ -133,7 +127,6 @@ async function initDatabase() {
       );
     `);
 
-    // Create Student schedule preferences table
     await pool.query(`
       CREATE TABLE IF NOT EXISTS student_schedule_preferences (
         student_id INTEGER PRIMARY KEY REFERENCES students(id) ON DELETE CASCADE,
@@ -193,9 +186,6 @@ async function migrateExistingData() {
   }
 }
 
-// ==========================================================================
-// DATABASE SEEDING
-// ==========================================================================
 async function seedDatabase() {
   const clubsCount = await pool.query("SELECT COUNT(*) FROM clubs");
   if (parseInt(clubsCount.rows[0].count) > 0) {
@@ -230,7 +220,6 @@ async function seedDatabase() {
     seededUserMap[user.username] = res.rows[0].id;
   }
 
-  // Students Users & Profiles
   const studentProfiles = [
     { username: 'dauren', password: '123', role: 'student', name: 'Қанатұлы Дәурен', grade: '8 «А»', phone: '+7 702 333 2211' },
     { username: 'sanzhar', password: '123', role: 'student', name: 'Әлібек Санжар', grade: '7 «Ә»', phone: '+7 775 555 4433' },
@@ -271,7 +260,6 @@ async function seedDatabase() {
     }
   }
 
-  // Seed Clubs
   const clubs = [
     {
       name: "Робототехника және электроника",
@@ -335,7 +323,7 @@ async function seedDatabase() {
     }
   ];
 
-  const seededClubMap = {}; // map name to clubId
+  const seededClubMap = {}; 
   for (const club of clubs) {
     const res = await pool.query(
       `INSERT INTO clubs (name, category, instructor_name, instructor_username, schedule, capacity, description, image) 
@@ -345,7 +333,6 @@ async function seedDatabase() {
     seededClubMap[club.name] = res.rows[0].id;
   }
 
-  // Seed Registrations
   const registrations = [
     { clubName: "Робототехника және электроника", studentName: "Қанатұлы Дәурен", date: "2026-06-12" },
     { clubName: "Робототехника және электроника", studentName: "Әлібек Санжар", date: "2026-06-13" },
@@ -365,27 +352,21 @@ async function seedDatabase() {
     }
   }
 
-  // Seed Attendance History for mock check-ins
   const pastDates = ["2026-06-15", "2026-06-18", "2026-06-22"];
   
-  // robotics students
   const robClubId = seededClubMap["Робототехника және электроника"];
   const robStd1 = seededStudentMap["Қанатұлы Дәурен"];
   const robStd2 = seededStudentMap["Әлібек Санжар"];
   
   if (robClubId) {
-    // Date 1
     await pool.query("INSERT INTO attendance (club_id, student_id, date, status) VALUES ($1, $2, $3, $4)", [robClubId, robStd1, pastDates[0], 'present']);
     await pool.query("INSERT INTO attendance (club_id, student_id, date, status) VALUES ($1, $2, $3, $4)", [robClubId, robStd2, pastDates[0], 'present']);
-    // Date 2
     await pool.query("INSERT INTO attendance (club_id, student_id, date, status) VALUES ($1, $2, $3, $4)", [robClubId, robStd1, pastDates[1], 'present']);
     await pool.query("INSERT INTO attendance (club_id, student_id, date, status) VALUES ($1, $2, $3, $4)", [robClubId, robStd2, pastDates[1], 'absent']);
-    // Date 3
     await pool.query("INSERT INTO attendance (club_id, student_id, date, status) VALUES ($1, $2, $3, $4)", [robClubId, robStd1, pastDates[2], 'present']);
     await pool.query("INSERT INTO attendance (club_id, student_id, date, status) VALUES ($1, $2, $3, $4)", [robClubId, robStd2, pastDates[2], 'present']);
   }
 
-  // football student
   const footClubId = seededClubMap["Футбол секциясы"];
   const footStd1 = seededStudentMap["Бақытжан Нұрасыл"];
   
@@ -398,13 +379,7 @@ async function seedDatabase() {
   console.log("Database seeded successfully!");
 }
 
-// ==========================================================================
-// REST API ENDPOINTS
-// ==========================================================================
 
-// --- AUTHENTICATION ---
-
-// Student registration
 app.post('/api/auth/register', async (req, res) => {
   const { username, password, name, grade, phone } = req.body;
   if (!username || !password || !name || !grade || !phone) {
@@ -412,20 +387,17 @@ app.post('/api/auth/register', async (req, res) => {
   }
 
   try {
-    // Check if user exists
     const checkUser = await pool.query("SELECT id FROM users WHERE username = $1", [username]);
     if (checkUser.rowCount > 0) {
       return res.status(400).json({ error: "Бұл логин жүйеде тіркелген" });
     }
 
-    // Insert user
     const userRes = await pool.query(
       "INSERT INTO users (username, password, role) VALUES ($1, $2, $3) RETURNING id, username, role",
       [username, password, 'student']
     );
     const userId = userRes.rows[0].id;
 
-    // Insert student profile
     const stdRes = await pool.query(
       "INSERT INTO students (user_id, name, grade, phone) VALUES ($1, $2, $3, $4) RETURNING id, name, grade, phone",
       [userId, name, grade, phone]
@@ -447,7 +419,6 @@ app.post('/api/auth/register', async (req, res) => {
   }
 });
 
-// Login (All roles)
 app.post('/api/auth/login', async (req, res) => {
   const { username, password } = req.body;
   if (!username || !password) {
@@ -469,7 +440,7 @@ app.post('/api/auth/login', async (req, res) => {
       return res.status(401).json({ error: "Құпия сөз қате" });
     }
 
-    // If student, load student profile details
+
     let studentId = null;
     let name = user.username; // default fallback
     
@@ -483,7 +454,6 @@ app.post('/api/auth/login', async (req, res) => {
         name = stdRes.rows[0].name;
       }
     } else if (user.role === 'teacher') {
-      // Find teacher name (for initial seeds it maps to instructor_name in clubs)
       const teacherRes = await pool.query(
         "SELECT instructor_name FROM clubs WHERE instructor_username = $1 ORDER BY id ASC LIMIT 1",
         [user.username]
@@ -509,7 +479,6 @@ app.post('/api/auth/login', async (req, res) => {
   }
 });
 
-// --- ADMIN TEACHER ACCOUNTS ---
 
 app.get('/api/admin/teachers', async (req, res) => {
   try {
@@ -621,9 +590,6 @@ app.delete('/api/admin/teachers/:id', async (req, res) => {
   }
 });
 
-// --- CLUBS MANAGEMENT ---
-
-// Get all clubs + registration counts
 app.get('/api/clubs', async (req, res) => {
   try {
     const query = `
@@ -639,7 +605,6 @@ app.get('/api/clubs', async (req, res) => {
     `;
     const result = await pool.query(query);
     
-    // Parse capacity and count to integers
     const clubs = result.rows.map(row => ({
       ...row,
       capacity: parseInt(row.capacity),
